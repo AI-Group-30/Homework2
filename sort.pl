@@ -8,7 +8,8 @@ swap([H|T], [H|T1]):-
 
 /* Comment describing bubbleSort */
 bubbleSort(L,SL):-
-    swap(L, L1), % at least one swap is needed!,
+    swap(L, L1), % at least one swap is needed
+    !,
     bubbleSort(L1, SL).
 bubbleSort(L, L). % here, the list is already sorted
 
@@ -24,19 +25,19 @@ ordered([H1, H2|T]):-
 insert(X, [],[X]).
 insert(E, [H|T], [E,H|T]):-
     ordered(T),
-    FILLINHERE(E, H),
+    E =< H,  % TODO: look at this
     !.
 
 /*Comment describing the 2nd clause of insert ...*/
 insert(E, [H|T], [H|T1]):-
     ordered(T),
-    insert(E, T, FILLINHERE).
+    insert(E, T, T1).
 
 /* Comment describing insertionSort */
 insertionSort([], []).
 insertionSort([H|T], SORTED) :-
     insertionSort(T, T1),
-    insert(H, T1, FILLINHERE).
+    insert(H, T1, SORTED).
 
 /* Comment to describe meregeSort... */
 mergeSort([], []). % The empty list is sorted
