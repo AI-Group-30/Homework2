@@ -72,18 +72,18 @@ merge([H1|T1], [H2|T2], [H2|T]):-
 split(_, [],[],[]).
 split(X, [H|T], [H|SMALL], BIG):-
     H =< X,
-    split(X, T, SMALL, FILLINHERE).
+    split(X, T, SMALL, BIG).
 split(X, [H|T], SMALL, [H|BIG]):-
     X =< H,
-    split(X, T, FILLINHERE, BIG).
+    split(X, T, SMALL, BIG).
 
 /* Comment describing quickSort */
 quickSort([], []).
 quickSort([H|T], LS):-
-    split(H, T, SMALL, FILLINHERE),
+    split(H, T, SMALL, BIG),
     quickSort(SMALL, S),
     quickSort(BIG, B),
-    append(S, [H|B], FILLINHERE).
+    append(S, [H|B], LS).
 
 /* Comment describing hybridSort */
 hybridSort(LIST, SMALLALG, BIGALG, THRESHOLD, SLIST):-
