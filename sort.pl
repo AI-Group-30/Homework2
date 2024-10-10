@@ -7,7 +7,7 @@ swap([H|T], [H|T1]):-
     swap(T, T1).
 
 /*
-    bubbleSort sorts a list by repeatatively swapping adjacent elements if in the wrong order.  
+    bubbleSort sorts a list by repeatatively swapping adjacent elements if in the wrong order.
     When a swap is made do a recursive call on the new (1 element more sorted) list.
     Otherwise, no swap was needed and the list is sorted
 */
@@ -22,7 +22,7 @@ bubbleSort(L, L). % Base case, the list is already sorted
     Base Case: Assumes empty and 1 element lists are ordered.
     Otherwise, the head must be less than the next and the remainder of the list must be sorted
 */
-ordered([]). 
+ordered([]).
 ordered([_X]).
 ordered([H1, H2|T]):-
     H1 =< H2,  % Head less than or equal to the next
@@ -104,17 +104,23 @@ quickSort([H|T], LS):-
 hybridSort(_, _, _, [], []).
 hybridSort(_, _, _, [X], [X]).
 hybridSort( SMALLALG, BIGALG, LIST, THRESHOLD, SLIST):-
-    length(LIST, N), 
+    length(LIST, N),
     N =< THRESHOLD,
     call(SMALLALG, LIST, SLIST).
 hybridSort( SMALLALG, mergeSort, THRESHOLD, LIST, SLIST):-
     length(LIST, N),
     N > THRESHOLD,
-    mergeSort(LIST, SLIST).
-hybridSort( SMALLALG, quickSort, THRESHOLD, LIST, SLIST):-
-    length(LIST, N), 
+    split_in_half(L, L1, L2),
+    hybridSort(SMALLALG, mergeSort, THRESHOLD, L1, S1),
+    hybridSort(SMALLALG, mergeSort, THRESHOLD, L2, S2),
+    merge(S1, S2, SL).
+hybridSort( SMALLALG, quickSort, THRESHOLD, [H|T], SLIST):-
+    length(LIST, N),
     N > THRESHOLD,
-    quickSort(LIST, SLIST).
+    split(H, T, SMALL, BIG),
+    hybridSort(SMALLALG, quickSort, THRESHOLD, SMALL, S),
+    hybridSort(SMALLALG, quickSort, THRESHOLD, BIG, B),
+    append(S, [H|B], SLIST).
 
 :- dynamic(randomList/1).
 
@@ -146,7 +152,7 @@ sortTime(ALGOTYPE, L, SL) :-
     format('Algotype: ~w~n',[ALGOTYPE]),
     assertz(sortTime(ALGOTYPE,T)).
 
-    
+
 
 runAlgos(L) :-
     sortTime(bubbleSort, L, _),
