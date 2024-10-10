@@ -89,7 +89,7 @@ quickSort([H|T], LS):-
 hybridSort(LIST, SMALLALG, BIGALG, THRESHOLD, SLIST):-
     length(LIST, N), 
     N =< THRESHOLD,
-    call(SMALLALG(LIST, SLIST)).
+    call(SMALLALG, LIST, SLIST).
 hybridSort(LIST, SMALLALG, BIGALG, THRESHOLD, SLIST):-
     length(LIST, N), 
     N > THRESHOLD,
