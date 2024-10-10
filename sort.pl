@@ -140,3 +140,8 @@ runAlgos(L) :-
     sortTime(hybridSort(L, insertionSort, quickSort, 10), _),
     sortTime(hybridSort(L, bubbleSort, mergeSort, 10), _),
     sortTime(hybridSort(L, insertionSort, mergeSort, 10), _).
+
+runProcess :-
+    saveLists(50, 100, 1, 100),
+    randomList(LENGTH, MIN, MAX, LIST),
+    runAlgos(LIST).
