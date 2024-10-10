@@ -1,6 +1,6 @@
 /*swap the first two elements if they are not in order*/
 swap([X, Y|T], [Y, X | T]):-
-    Y =< X.
+    Y < X. % TODO THIS WAS NOT HOW ANCA HAD IT. SHE HAD IT WRONG. HERS BROKE FOR LISTS WITH DUPLICATES.
 
 /*swap elements in the tail*/
 swap([H|T], [H|T1]):-
@@ -92,3 +92,47 @@ hybridSort(LIST, SMALLALG, BIGALG, THRESHOLD, SLIST):-
 hybridSort(LIST, SMALLALG, BIGALG, THRESHOLD, SLIST):-
     length(LIST, N), N > THRESHOLD,
     FILLINHERE. % Comment: fill in the behavior of BIGALG.
+
+
+:- dynamic(randomList/1).
+
+randomList(0, _, _, []).
+randomList(LENGTH, MIN, MAX, [H|T]):-
+    LENGTH > 0,
+    random_between(MIN, MAX, H),
+    LENGTHMINUSONE is LENGTH - 1,
+    randomList(LENGTHMINUSONE, MIN, MAX, T).
+
+saveLists(0, _, _, _).
+saveLists(N, LENGTH, MIN, MAX):-
+    N > 0,
+    randomList(LENGTH, MIN, MAX, LIST),
+    assertz(randomList(LIST)),
+    NMINUSONE is N - 1,
+    saveLists(NMINUSONE, LENGTH, MIN, MAX).
+
+
+
+:- dynamic(sortTime/2).
+
+sortTime(ALGOTYPE, L, SL) :-
+    statistics(cputime, T0),
+    call(ALGOTYPE, L, SL),
+    statistics(cputime, T1),
+    T is T1 - T0,
+    format('CPU time: ~w~n',[T]),
+    format('Algotype: ~w~n',[ALGOTYPE]),
+    assertz(sortTime(ALGOTYPE,T)).
+
+    
+
+runAlgos(L) :-
+    sortTime(bubbleSort, L, _),
+    sortTime(insertionSort, L, _),
+    sortTime(mergeSort, L, _),
+    sortTime(quickSort, L, _).
+    sortTime(hybridSort(L, bubbleSort, quickSort, 10), _),
+    % sortTime(hybridSort(L, insertionSort, quickSort, 10), _),
+    % sortTime(hybridSort(L, bubbleSort, mergeSort, 10), _),
+    % sortTime(hybridSort(L, insertionSort, mergeSort, 10), _).
+
