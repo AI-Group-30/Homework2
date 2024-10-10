@@ -87,11 +87,16 @@ quickSort([H|T], LS):-
 
 /* Comment describing hybridSort */
 hybridSort(LIST, SMALLALG, BIGALG, THRESHOLD, SLIST):-
-    length(LIST, N), N=< THRESHOLD,
-    SMALLALG(LIST, FILLINHERE).
+    length(LIST, N), 
+    N =< THRESHOLD,
+    call(SMALLALG(LIST, SLIST)).
 hybridSort(LIST, SMALLALG, BIGALG, THRESHOLD, SLIST):-
-    length(LIST, N), N > THRESHOLD,
-    FILLINHERE. % Comment: fill in the behavior of BIGALG.
+    length(LIST, N), 
+    N > THRESHOLD,
+    split_in_half(LIST, L1, L2), %cut it into halves
+    hybridSort(L1, SMALLALG, BIGALG, THRESHOLD, S1),  %recursive call with first half
+    hybridSort(L2, SMALLALG, BIGALG, THRESHOLD, S2),  % recurseive call the second half
+    merge(S1, S2, SLIST).  % Put the halves back together
 
 
 :- dynamic(randomList/1).
@@ -130,9 +135,8 @@ runAlgos(L) :-
     sortTime(bubbleSort, L, _),
     sortTime(insertionSort, L, _),
     sortTime(mergeSort, L, _),
-    sortTime(quickSort, L, _).
+    sortTime(quickSort, L, _),
     sortTime(hybridSort(L, bubbleSort, quickSort, 10), _),
-    % sortTime(hybridSort(L, insertionSort, quickSort, 10), _),
-    % sortTime(hybridSort(L, bubbleSort, mergeSort, 10), _),
-    % sortTime(hybridSort(L, insertionSort, mergeSort, 10), _).
-
+    sortTime(hybridSort(L, insertionSort, quickSort, 10), _),
+    sortTime(hybridSort(L, bubbleSort, mergeSort, 10), _),
+    sortTime(hybridSort(L, insertionSort, mergeSort, 10), _).
