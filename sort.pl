@@ -86,18 +86,20 @@ quickSort([H|T], LS):-
     append(S, [H|B], LS).
 
 /* Comment describing hybridSort */
-hybridSort(LIST, SMALLALG, BIGALG, THRESHOLD, SLIST):-
+hybridSort(_, _, _, [], []).
+hybridSort(_, _, _, [X], [X]).
+hybridSort( SMALLALG, BIGALG, LIST, THRESHOLD, SLIST):-
     length(LIST, N), 
     N =< THRESHOLD,
     call(SMALLALG, LIST, SLIST).
-hybridSort(LIST, SMALLALG, BIGALG, THRESHOLD, SLIST):-
+hybridSort( SMALLALG, mergeSort, THRESHOLD, LIST, SLIST):-
+    length(LIST, N),
+    N > THRESHOLD,
+    mergeSort(LIST, SLIST).
+hybridSort( SMALLALG, quickSort, THRESHOLD, LIST, SLIST):-
     length(LIST, N), 
     N > THRESHOLD,
-    split_in_half(LIST, L1, L2), %cut it into halves
-    hybridSort(L1, SMALLALG, BIGALG, THRESHOLD, S1),  %recursive call with first half
-    hybridSort(L2, SMALLALG, BIGALG, THRESHOLD, S2),  % recurseive call the second half
-    merge(S1, S2, SLIST).  % Put the halves back together
-
+    quickSort(LIST, SLIST).
 
 :- dynamic(randomList/1).
 
@@ -136,10 +138,10 @@ runAlgos(L) :-
     sortTime(insertionSort, L, _),
     sortTime(mergeSort, L, _),
     sortTime(quickSort, L, _),
-    sortTime(hybridSort(L, bubbleSort, quickSort, 10), _),
-    sortTime(hybridSort(L, insertionSort, quickSort, 10), _),
-    sortTime(hybridSort(L, bubbleSort, mergeSort, 10), _),
-    sortTime(hybridSort(L, insertionSort, mergeSort, 10), _).
+    sortTime(hybridSort(bubbleSort, quickSort, 10), L, _),
+    sortTime(hybridSort(insertionSort, quickSort, 10), L, _),
+    sortTime(hybridSort(bubbleSort, mergeSort, 10), L, _),
+    sortTime(hybridSort(insertionSort, mergeSort, 10), L, _).
 
 runProcess :-
     saveLists(50, 100, 1, 100),
