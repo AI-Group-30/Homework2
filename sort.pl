@@ -103,19 +103,19 @@ quickSort([H|T], LS):-
 */
 hybridSort(_, _, _, [], []).
 hybridSort(_, _, _, [X], [X]).
-hybridSort( SMALLALG, BIGALG, LIST, THRESHOLD, SLIST):-
+hybridSort(SMALLALG, BIGALG, THRESHOLD, LIST, SLIST) :-
     length(LIST, N),
     N =< THRESHOLD,
     call(SMALLALG, LIST, SLIST).
-hybridSort( SMALLALG, mergeSort, THRESHOLD, LIST, SLIST):-
+hybridSort(SMALLALG, mergeSort, THRESHOLD, LIST, SLIST) :-
     length(LIST, N),
     N > THRESHOLD,
-    split_in_half(L, L1, L2),
+    split_in_half(LIST, L1, L2),
     hybridSort(SMALLALG, mergeSort, THRESHOLD, L1, S1),
     hybridSort(SMALLALG, mergeSort, THRESHOLD, L2, S2),
-    merge(S1, S2, SL).
-hybridSort( SMALLALG, quickSort, THRESHOLD, [H|T], SLIST):-
-    length(LIST, N),
+    merge(S1, S2, SLIST).
+hybridSort(SMALLALG, quickSort, THRESHOLD, [H|T], SLIST) :-
+    length([H|T], N),
     N > THRESHOLD,
     split(H, T, SMALL, BIG),
     hybridSort(SMALLALG, quickSort, THRESHOLD, SMALL, S),
@@ -166,5 +166,10 @@ runAlgos(L) :-
 
 runProcess :-
     saveLists(50, 100, 1, 100),
-    randomList(LENGTH, MIN, MAX, LIST),
-    runAlgos(LIST).
+    forall(randomList(List), (
+        writeln('Running algorithms on list:'),
+        writeln(List),
+        runAlgos(List),
+        nl
+    )).
+
